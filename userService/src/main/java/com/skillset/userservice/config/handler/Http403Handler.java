@@ -1,7 +1,7 @@
 package com.skillset.userservice.config.handler;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.skillset.userservice.service.dto.ErrorResponse;
+import com.skillset.userservice.service.dto.ErrorDTO;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -24,7 +24,7 @@ public class Http403Handler implements AccessDeniedHandler {
     public void handle(HttpServletRequest request, HttpServletResponse response, AccessDeniedException accessDeniedException) throws IOException, ServletException {
         log.error("[인증오류] 403");
 
-        ErrorResponse errorResponse = ErrorResponse.builder()
+        ErrorDTO errorResponse = ErrorDTO.builder()
                 .code("403")
                 .message("403 ERROR")
                 .build();

@@ -1,19 +1,15 @@
 package com.skillset.userservice.domain;
 
 import jakarta.persistence.*;
-
-import java.util.HashSet;
-import java.util.Set;
+import lombok.Getter;
 
 @Entity
-@Table(name= "Role")
+@Table(name= "ROLE")
+@Getter
 public class Role {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private long id;
 
     private String roleName;
-
-    @ManyToMany(mappedBy = "roles")
-    private Set<User> users = new HashSet<>();
 }

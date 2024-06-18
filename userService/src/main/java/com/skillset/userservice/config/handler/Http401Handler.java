@@ -1,7 +1,7 @@
 package com.skillset.userservice.config.handler;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.skillset.userservice.service.dto.ErrorResponse;
+import com.skillset.userservice.service.dto.ErrorDTO;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -24,7 +24,7 @@ public class Http401Handler implements AuthenticationEntryPoint {
     public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException authException) throws IOException, ServletException {
         log.error("인증오류-> 로그인필요");
 
-        ErrorResponse errorResponse = ErrorResponse.builder()
+        ErrorDTO errorResponse = ErrorDTO.builder()
                 .code("401")
                 .message("로그인이 필요합니다.")
                 .build();

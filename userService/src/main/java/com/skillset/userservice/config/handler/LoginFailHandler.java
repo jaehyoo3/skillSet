@@ -1,7 +1,8 @@
 package com.skillset.userservice.config.handler;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.skillset.userservice.service.dto.ErrorResponse;
+
+import com.skillset.userservice.service.dto.ErrorDTO;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -25,7 +26,7 @@ public class LoginFailHandler implements AuthenticationFailureHandler {
     public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response, AuthenticationException exception) throws IOException, ServletException {
         log.error("[오류] 아이디 또는 비밀번호가 틀렸습니다.");
 
-        ErrorResponse errorResponse = ErrorResponse.builder()
+        ErrorDTO errorResponse = ErrorDTO.builder()
                 .code("400")
                 .message("아이디 또는 비밀번호가 올바르지 않습니다.")
                 .build();
