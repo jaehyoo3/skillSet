@@ -20,6 +20,8 @@ public class Message {
 
     private LocalDateTime timestamp;
 
+    private LocalDateTime startTime;
+    private LocalDateTime endTime;
     public Long getId() {
         return id;
     }
@@ -58,5 +60,21 @@ public class Message {
 
     public void setTimestamp(LocalDateTime timestamp) {
         this.timestamp = timestamp;
+    }
+
+    public LocalDateTime getStartTime() {
+        return startTime;
+    }
+
+    public void setStartTime(LocalDateTime startTime) {
+        this.startTime = startTime;
+    }
+
+    public LocalDateTime getEndTime() {
+        return endTime;
+    }
+
+    public void setEndTime(LocalDateTime endTime) {
+        this.endTime = endTime;
     }
 }
