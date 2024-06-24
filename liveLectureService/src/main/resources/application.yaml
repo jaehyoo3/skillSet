@@ -1,5 +1,5 @@
 server:
-  port: 9000
+  port: 9001
   servlet:
     session:
       cookie:
@@ -7,7 +7,7 @@ server:
 
 spring:
   application:
-    name: user-service
+    name: live-service
   jpa:
     hibernate:
       ddl-auto: update

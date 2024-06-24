@@ -10,7 +10,11 @@ spring:
         - id: user-service
           uri: lb://USER-SERVICE
           predicates:
-            - Path=/users/**
+            - Path=/user/**
+        - id: live-service
+          uri: lb://LIVE-SERVICE
+          predicates:
+            - Path=/live/**
     discovery:
       client:
         service-url:
