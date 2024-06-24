@@ -99,6 +99,7 @@ out/
 
 # SonarLint plugin
 .idea/sonarlint/
+.idea/sonarlint/*
 
 # Editor-based Rest Client
 .idea/httpRequests
