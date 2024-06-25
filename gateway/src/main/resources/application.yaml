@@ -1,11 +1,27 @@
 server:
-  port: 8080
+  port: 8443   # HTTPS 포트
+  ssl:
+    enabled: true
+    key-store: classpath:ssl-server.jks
+    key-store-password: test1234
+    key-alias: selfsigned_localhost_sslserver
 
 spring:
   application:
     name: gateway-service
   cloud:
     gateway:
+      httpclient:
+        websocket:
+          max-frame-payload-length: 1048576
+      websockets:
+        enabled: true
+      default-filters:
+        - name: GlobalFilter
+          args:
+            baseMessage: Spring Cloud Gateway Global Filter
+            preLogger: true
+            postLogger: true
       routes:
         - id: user-service
           uri: lb://USER-SERVICE
@@ -15,11 +31,21 @@ spring:
           uri: lb://LIVE-SERVICE
           predicates:
             - Path=/live/**
+          filters:
+            - RewritePath=/live/(?<segment>.*), /$\{segment}
+            - name: DedupeResponseHeader
+              args:
+                strategy: RETAIN_FIRST
+                name: Access-Control-Allow-Credentials
+            - name: AddResponseHeader
+              args:
+                name: Access-Control-Allow-Origin
+                value: "*"
+            - name: PreserveHostHeader
     discovery:
       client:
         service-url:
           defaultZone: http://localhost:8761/eureka/
-
 eureka:
   client:
     register-with-eureka: true
