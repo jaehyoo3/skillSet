@@ -11,6 +11,19 @@ spring:
     name: gateway-service
   cloud:
     gateway:
+      globalcors:
+        corsConfigurations:
+          '[/**]':
+            allowedOrigins: "*"
+            allowedMethods:
+              - GET
+              - POST
+              - PUT
+              - DELETE
+              - OPTIONS
+            allowedHeaders:
+              - "*"
+            allowCredentials: false
       httpclient:
         websocket:
           max-frame-payload-length: 1048576

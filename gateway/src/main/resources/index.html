@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Video Chat</title>
+    <style>
+        #local-video, #remote-video {
+            width: 50%;
+            height: 50%;
+        }
+    </style>
+</head>
+<body>
+<h1>Video Chat</h1>
+<video id="local-video" autoplay></video>
+<video id="remote-video" autoplay></video>
+
+<script src="https://webrtc.github.io/adapter/adapter-latest.js"></script>
+<script>
+    const localVideo = document.getElementById('local-video');
+    const remoteVideo = document.getElementById('remote-video');
+
+    // WebSocket 연결
+    const socket = new WebSocket('wss://localhost:8443/live/chat/1');
+
+    // WebRTC 연결
+    let pc;
+    let localStream;
+
+    // 로컬 카메라 스트림 가져오기
+    navigator.mediaDevices.getUserMedia({ video: true, audio: true })
+        .then(stream => {
+            localStream = stream;
+            localVideo.srcObject = stream;
+        })
+        .catch(error => {
+            console.error('Error accessing media device:', error);
+        });
+
+    // WebSocket 메시지 핸들러
+    socket.addEventListener('message', event => {
+        const data = JSON.parse(event.data);
+        switch (data.type) {
+            case 'sdp':
+                handleSdpMessage(data);
+                break;
+            case 'ice':
+                handleIceCandidate(data);
+                break;
+            // 다른 메시지 타입 처리
+        }
+    });
+
+    // SDP 메시지 처리
+    function handleSdpMessage(data) {
+        if (!pc) {
+            pc = new RTCPeerConnection();
+            pc.addStream(localStream);
+            pc.onicecandidate = event => {
+                if (event.candidate) {
+                    socket.send(JSON.stringify({
+                        type: 'ice',
+                        candidate: event.candidate.toJSON()
+                    }));
+                }
+            };
+            pc.onaddstream = event => {
+                remoteVideo.srcObject = event.stream;
+            };
+        }
+
+        const desc = new RTCSessionDescription({
+            type: data.sdpType,
+            sdp: data.sdpDescription
+        });
+
+        pc.setRemoteDescription(desc)
+            .then(() => {
+                if (data.sdpType === 'offer') {
+                    pc.createAnswer()
+                        .then(answer => pc.setLocalDescription(answer))
+                        .then(() => {
+                            socket.send(JSON.stringify({
+                                type: 'sdp',
+                                sdpType: 'answer',
+                                sdpDescription: pc.localDescription.sdp
+                            }));
+                        });
+                }
+            })
+            .catch(error => {
+                console.error('Error setting remote description:', error);
+            });
+    }
+
+    // ICE 후보 처리
+    function handleIceCandidate(data) {
+        const candidate = new RTCIceCandidate(data.candidate);
+        pc.addIceCandidate(candidate)
+            .catch(error => {
+                console.error('Error adding ICE candidate:', error);
+            });
+    }
+</script>
+</body>
+</html>

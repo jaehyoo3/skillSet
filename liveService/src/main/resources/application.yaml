@@ -4,6 +4,9 @@ server:
     session:
       cookie:
         max-age: 172800
+openvidu:
+  url: http://localhost:4443
+  secret: dmssk6480
 
 spring:
   application:
