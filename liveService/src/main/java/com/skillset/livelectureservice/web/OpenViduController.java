@@ -6,8 +6,12 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import io.openvidu.java.client.Session;
+
+import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/openvidu")
@@ -39,5 +43,20 @@ public class OpenViduController {
         } else {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to generate token");
         }
+    }
+
+    @GetMapping("/sessions")
+    public ResponseEntity<List<String>> getActiveSessions() {
+        logger.info("Retrieving active sessions");
+        List<String> sessionIds = openViduService.getActiveSessions();
+        return ResponseEntity.ok(sessionIds);
+    }
+
+    @PostMapping("/sessions/{sessionId}/message")
+    public ResponseEntity<String> sendMessage(@PathVariable String sessionId, @RequestBody Map<String, String> params) {
+        String message = params.get("message");
+        logger.info("Sending message to session " + sessionId + ": " + message);
+        openViduService.sendMessage(sessionId, message);
+        return ResponseEntity.ok("Message sent");
     }
 }
